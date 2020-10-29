@@ -1,3 +1,47 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Oct 29 11:07:18 2020
+
+@author: Tobias Faiss
+
+The code snippet was provided by IBM's DV0101EN "Visualizing Data with Python" course on edX.org
+URL: https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBMDeveloperSkillsNetwork-DV0101EN-SkillsNetwork/labs/Module%204/DV0101EN-Exercise-Waffle-Charts-Word-Clouds-and-Regression-Plots.ipynb
+
+"""
+
+
+## IMPORT LIBRARIES
+
+import numpy as np  # useful for many scientific computing in Python
+import pandas as pd # primary data structure library
+from PIL import Image # converting images into arrays
+
+
+## IMPORT EXEMPLARY DATA SET
+df_can = pd.read_excel('https://s3-api.us-geo.objectstorage.softlayer.net/cf-courses-data/CognitiveClass/DV0101EN/labs/Data_Files/Canada.xlsx',
+                       sheet_name='Canada by Citizenship',
+                       skiprows=range(20),
+                       skipfooter=2)
+
+print('Data downloaded and read into a dataframe!')
+
+
+## BASIC DATA CLEANING
+
+df_can.drop(['AREA','REG','DEV','Type','Coverage'], axis = 1, inplace = True)
+df_can.rename (columns = {'OdName':'Country', 'AreaName':'Continent','RegName':'Region'}, inplace = True)
+df_can.columns = list(map(str, df_can.columns))
+df_can.set_index('Country', inplace = True)
+df_can['Total'] =  df_can.sum (axis = 1)
+years = list(map(str, range(1980, 2014)))
+print ('data dimensions:', df_can.shape)
+
+## EXEMPLARY DATAFRAME
+df_dsn = df_can.loc[['Denmark', 'Norway', 'Sweden'], :]
+
+
+## WAFFLE CHART FUNCTION
+
 def create_waffle_chart(categories, values, height, width, colormap, value_sign=''):
 
     # compute the proportion of each category with respect to the total
